@@ -20,67 +20,52 @@ public class Main {
         File save = new File(dir, "savegames");
         File temp = new File(dir, "temp");
         List<File> games = Arrays.asList(src, res, save, temp);
-        for (File game : games) {
-            if (game.mkdir()) {
-                log.append("Папка " + game.getName() + " создана" + "\n");
-            } else {
-                log.append("ошибка создания папки " + game.getName() + "\n");
-            }
-        }
+        createDirectory(games, log);
 
         File maine = new File(src, "main");//назвал maine т.к. имя main в проге использовать не рекомендуется
-        if (maine.mkdir()) {
-            log.append("Папка main создана" + "\n");
-        } else {
-            log.append("ошибка создания папки main" + "\n");
-        }
-        if (new File(src, "test").mkdir()) {
-            log.append("Папка test создана" + "\n");
-        } else {
-            log.append("ошибка создания папки test" + "\n");
-        }
+        File test = new File(src, "test");
+        List<File> srcCatalog = Arrays.asList(maine, test);
+        createDirectory(srcCatalog, log);
 
         File fileMain = new File(maine, "Main.java");
         File fileUtils = new File(maine, "Utils.java");
-        List<File> fileJava = Arrays.asList(fileMain, fileUtils); //создали список в него засунули объекты файлов которые надо создать
-        for (File java : fileJava) {
-            try {
-                if (java.createNewFile()) {
-                    log.append("Файл " + java.getName() + " создан" + "\n");
-                } else {
-                    log.append("ошибка создания файла " + java.getName() + "\n");
-                }
-            } catch (IOException ex) {
-                System.out.println(ex.getMessage());
-            }
-        }
+        createFile(fileMain, log);
+        createFile(fileUtils, log);
 
         File drawables = new File(res, "drawables");
         File vectors = new File(res, "vectors");
         File icons = new File(res, "icons");
         List<File> resСatalog = Arrays.asList(drawables, vectors, icons);
-        for (File catalog : resСatalog) {
-            if (catalog.mkdir()) {
-                log.append("Папка " + catalog.getName() + " создана" + "\n");
-            } else {
-                log.append("ошибка создания папки " + catalog.getName() + "\n");
-            }
-        }
+        createDirectory(resСatalog, log);
 
         File file = new File(temp, "temp.txt");
-        try {
-            if (file.createNewFile()) {
-                log.append("файл temp создан" + "\n");
-            } else {
-                log.append("ошибка создания файла temp");
-            }
+        createFile(file, log);
+
+        System.out.println(log);
+
+        try (FileWriter writer = new FileWriter(file, false)) {//запись логов в файл temp
+            writer.write(String.valueOf(log));
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
-        System.out.println(log);
+    }
+    private static void createDirectory(List<File> catalog, StringBuilder log) {
+        for (File cat : catalog) {
+            if (cat.mkdir()) {
+                log.append("Папка " + cat.getName() + " создана" + "\n");
+            } else {
+                log.append("ошибка создания папки " + cat.getName() + "\n");
+            }
+        }
+    }
 
-        try (FileWriter writer = new FileWriter(file, false)) {
-            writer.write(String.valueOf(log));
+    private static void createFile (File file, StringBuilder log) {
+        try {
+            if (file.createNewFile()) {
+                log.append("файл " + file.getName() + " создан" + "\n");
+            } else {
+                log.append("ошибка создания файла " + file.getName() + "\n");
+            }
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
         }
